@@ -27,7 +27,7 @@ namespace RaceDayAPI.Controllers
 
             if (HttpContext.Session.GetRole() != "Participant")
             {
-                return Forbid();
+                return StatusCode(403, new { message = "Access denied. Participant role required." });
             }
 
             var userId = HttpContext.Session.GetUserId().Value;
@@ -59,7 +59,7 @@ namespace RaceDayAPI.Controllers
 
             if (HttpContext.Session.GetRole() != "Participant")
             {
-                return Forbid();
+                return StatusCode(403, new { message = "Access denied. Participant role required." });
             }
 
             var userId = HttpContext.Session.GetUserId().Value;

@@ -27,7 +27,7 @@ namespace RaceDayAPI.Controllers
 
             if (HttpContext.Session.GetRole() != "Organiser")
             {
-                return Forbid();
+                return StatusCode(403, new { message = "Access denied. Organiser role required." });
             }
 
             var userId = HttpContext.Session.GetUserId().Value;
@@ -58,7 +58,7 @@ namespace RaceDayAPI.Controllers
 
             if (HttpContext.Session.GetRole() != "Organiser")
             {
-                return Forbid();
+                return StatusCode(403, new { message = "Access denied. Organiser role required." });
             }
 
             var userId = HttpContext.Session.GetUserId().Value;
