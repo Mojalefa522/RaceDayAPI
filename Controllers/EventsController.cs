@@ -18,6 +18,9 @@ namespace RaceDayAPI.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retrieves a list of all events.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -38,6 +41,10 @@ namespace RaceDayAPI.Controllers
             return Ok(events);
         }
 
+        /// <summary>
+        /// Retrieves a specific event by its ID, including its categories and organiser details.
+        /// </summary>
+        /// <param name="id">The ID of the event.</param>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -84,6 +91,10 @@ namespace RaceDayAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Creates a new event. Only accessible by Organisers.
+        /// </summary>
+        /// <param name="dto">The event details.</param>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto dto)
         {
@@ -132,6 +143,11 @@ namespace RaceDayAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Updates an existing event. Only accessible by the Organiser who created it.
+        /// </summary>
+        /// <param name="id">The ID of the event to update.</param>
+        /// <param name="dto">The updated event details.</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateEventDto dto)
         {
@@ -180,6 +196,10 @@ namespace RaceDayAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Deletes an event. Only accessible by the Organiser who created it.
+        /// </summary>
+        /// <param name="id">The ID of the event to delete.</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
