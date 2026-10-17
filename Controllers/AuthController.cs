@@ -70,11 +70,10 @@ namespace RaceDayAPI.Controllers
                 var profile = new OrganiserProfile
                 {
                     UserID = user.UserID,
-                    CompanyName = dto.CompanyName,
-                    Website = dto.Website,
-                    ContactPhone = dto.ContactPhone
+                    CompanyName = dto.CompanyName ?? "N/A",
+                    Website = "https://placeholder.com",
+                    ContactPhone = dto.ContactPhone ?? "N/A"
                 };
-                _context.OrganiserProfiles.Add(profile);
             }
             else
             {
