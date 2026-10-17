@@ -15,7 +15,7 @@ namespace RaceDayAPI.Models
         [MaxLength(20)]
         public string Status { get; set; } = "pending";
         [MaxLength(20)]
-        public string BibNumber { get; set; }
+        public string? BibNumber { get; set; }
 
         [ForeignKey("CategoryID")]
         public Category Category { get; set; }
