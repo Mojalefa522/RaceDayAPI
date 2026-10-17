@@ -19,12 +19,18 @@ jobs:
         dotnet-version: '10.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore RaceDayMaster.slnx
+      run: dotnet restore RaceDayAPI/RaceDayAPI.csproj
+      
+    - name: Restore Test Dependencies
+      run: dotnet restore RaceDayAPI.Tests/RaceDayAPI.Tests.csproj
 
-    - name: Build
-      run: dotnet build RaceDayMaster.slnx --no-restore
+    - name: Build API
+      run: dotnet build RaceDayAPI/RaceDayAPI.csproj --no-restore
+
+    - name: Build Tests
+      run: dotnet build RaceDayAPI.Tests/RaceDayAPI.Tests.csproj --no-restore
 
     - name: Test
-      run: dotnet test RaceDayMaster.slnx --no-build --verbosity normal
+      run: dotnet test RaceDayAPI.Tests/RaceDayAPI.Tests.csproj --no-build --verbosity normal
       env:
         ASPNETCORE_ENVIRONMENT: Testing
