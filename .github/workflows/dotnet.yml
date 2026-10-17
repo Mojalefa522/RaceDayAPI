@@ -3,6 +3,8 @@ name: .NET CI
 on:
   push:
     branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
 
 jobs:
   build:
@@ -11,13 +13,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Show files
-      run: ls -R
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore RaceDayAPI.Tests/RaceDayAPI.Tests.csproj
+
+    - name: Build
+      run: dotnet build RaceDayAPI.Tests/RaceDayAPI.Tests.csproj --no-restore
+
+    - name: Test
+      run: dotnet test RaceDayAPI.Tests/RaceDayAPI.Tests.csproj --no-build --verbosity normal
+      env:
+        ASPNETCORE_ENVIRONMENT: Testing
