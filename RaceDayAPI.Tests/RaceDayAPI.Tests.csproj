@@ -24,4 +24,4 @@
 		<ProjectReference Include="..\RaceDayAPI\RaceDayAPI.csproj" />
 	</ItemGroup>
 
-</Project>
+</Project> 
