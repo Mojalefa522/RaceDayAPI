@@ -16,15 +16,15 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: '10.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore RaceDayMaster.slnx
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build RaceDayMaster.slnx --no-restore
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test RaceDayMaster.slnx --no-build --verbosity normal
       env:
         ASPNETCORE_ENVIRONMENT: Testing
