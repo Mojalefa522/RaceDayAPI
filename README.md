@@ -1,10 +1,14 @@
+# RaceDayAPI
+
+A Web API built with ASP.NET Core for managing race events, categories, enrolments and results. The system enforces role-based access, allowing Organisers to create events and Participants to enrol.
+
 ## User Roles
 
 ### Organiser
-- Create, update, and delete events
-- Define categories (age/distance) for events
-- View all enrolments for their events
-- Enter finish times and positions for participants
+- Can create, update and delete events
+- Can define categories such as the age groups and the distance for events
+- Can view all enrolments for their events
+- Can enter finish times and positions for participants
 
 ### Participant
 - View available events and categories
@@ -22,3 +26,6 @@
 GitHub Actions builds and runs tests on every push.
 
 ![CI Build](docs/ci-build.png)
+
+## YouTube Video Link
+https://youtu.be/R7yk_NVO6jc
