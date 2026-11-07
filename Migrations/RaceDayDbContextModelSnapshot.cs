@@ -121,7 +121,6 @@ namespace RaceDayAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrolmentID"));
 
                     b.Property<string>("BibNumber")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 

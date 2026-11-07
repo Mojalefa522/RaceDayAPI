@@ -39,7 +39,6 @@ namespace RaceDayAPI.Controllers
             {
                 return BadRequest(new { message = "Role must be Organiser or Participant." });
             }
-
             var exists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
             if (exists)
             {
@@ -81,9 +80,9 @@ namespace RaceDayAPI.Controllers
                 {
                     UserID = user.UserID,
                     DateOfBirth = dto.DateOfBirth,
-                    Gender = dto.Gender,
-                    EmergencyContact = dto.EmergencyContact,
-                    MedicalNotes = dto.MedicalNotes
+                    Gender = dto.Gender ?? "Not Specified",
+                    EmergencyContact = dto.EmergencyContact ?? "None Provided",
+                    MedicalNotes = dto.MedicalNotes ?? "None"
                 };
                 _context.ParticipantProfiles.Add(profile);
             }

@@ -4364,8 +4364,8 @@
     },
     "RaceDayAPI/1.0.0": {
       "type": "project",
-      "path": "../RaceDayAPI/RaceDayAPI.csproj",
-      "msbuildProject": "../RaceDayAPI/RaceDayAPI.csproj"
+      "path": "../RaceDayAPI.csproj",
+      "msbuildProject": "../RaceDayAPI.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -4386,11 +4386,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\datal\\source\\repos\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\datal\\source\\repos\\RaceDayAPI\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
       "projectName": "RaceDayAPI.Tests",
-      "projectPath": "C:\\Users\\datal\\source\\repos\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
+      "projectPath": "C:\\Users\\datal\\source\\repos\\RaceDayAPI\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
       "packagesPath": "C:\\Users\\datal\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\datal\\source\\repos\\RaceDayAPI.Tests\\obj\\",
+      "outputPath": "C:\\Users\\datal\\source\\repos\\RaceDayAPI\\RaceDayAPI.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
