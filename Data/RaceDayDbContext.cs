@@ -33,8 +33,9 @@ namespace RaceDayAPI.Data
                 .IsUnique();
 
             modelBuilder.Entity<EventEnrolment>()
-                .HasIndex(ee => new { ee.CategoryID, ee.ParticipantID })
-                .IsUnique();
+                .HasIndex(ee => ee.BibNumber)
+                .IsUnique()
+                .HasFilter("[BibNumber] IS NOT NULL");
 
             modelBuilder.Entity<EventEnrolment>()
                 .HasIndex(ee => ee.BibNumber)

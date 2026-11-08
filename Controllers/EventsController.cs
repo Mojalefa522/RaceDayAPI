@@ -18,9 +18,6 @@ namespace RaceDayAPI.Controllers
             _context = context;
         }
 
-        /// <summary>
-        /// Retrieves a list of all events.
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -41,10 +38,6 @@ namespace RaceDayAPI.Controllers
             return Ok(events);
         }
 
-        /// <summary>
-        /// Retrieves a specific event by its ID, including its categories and organiser details.
-        /// </summary>
-        /// <param name="id">The ID of the event.</param>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -91,10 +84,6 @@ namespace RaceDayAPI.Controllers
             });
         }
 
-        /// <summary>
-        /// Creates a new event. Only accessible by Organisers.
-        /// </summary>
-        /// <param name="dto">The event details.</param>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto dto)
         {
@@ -143,11 +132,6 @@ namespace RaceDayAPI.Controllers
             });
         }
 
-        /// <summary>
-        /// Updates an existing event. Only accessible by the Organiser who created it.
-        /// </summary>
-        /// <param name="id">The ID of the event to update.</param>
-        /// <param name="dto">The updated event details.</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateEventDto dto)
         {
@@ -196,10 +180,6 @@ namespace RaceDayAPI.Controllers
             });
         }
 
-        /// <summary>
-        /// Deletes an event. Only accessible by the Organiser who created it.
-        /// </summary>
-        /// <param name="id">The ID of the event to delete.</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -230,6 +210,58 @@ namespace RaceDayAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+        [HttpPost("{eventId}/enrol")]
+        public async Task<IActionResult> Enrol(int eventId, [FromBody] CreateEnrolmentDto dto)
+        {
+            if (!HttpContext.Session.IsLoggedIn())
+            {
+                return Unauthorized(new { message = "Not logged in." });
+            }
+
+            if (HttpContext.Session.GetRole() != "Participant")
+            {
+                return StatusCode(403, new { message = "Only Participants can enrol." });
+            }
+
+            var userId = HttpContext.Session.GetUserId().Value;
+
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryID == dto.CategoryId && c.EventID == eventId);
+
+            if (category == null)
+            {
+                return NotFound(new { message = "Category not found for this event." });
+            }
+
+            if (category.CurrentEnrolments >= category.MaxCapacity)
+            {
+                return Conflict(new { message = "This category is full." });
+            }
+
+            var alreadyEnrolled = await _context.EventEnrolments.AnyAsync(e => e.CategoryID == dto.CategoryId && e.ParticipantID == userId);
+            if (alreadyEnrolled)
+            {
+                return Conflict(new { message = "You are already enrolled in this category." });
+            }
+
+            var totalEnrolments = await _context.EventEnrolments.CountAsync();
+            var bibNumber = $"B{totalEnrolments + 1:D3}";
+
+            var enrolment = new EventEnrolment
+            {
+                CategoryID = dto.CategoryId,
+                ParticipantID = userId,
+                EnrolmentDate = DateTime.Now,
+                Status = "pending",
+                BibNumber = bibNumber
+            };
+
+            _context.EventEnrolments.Add(enrolment);
+            category.CurrentEnrolments++;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Successfully enrolled." });
         }
     }
 }
