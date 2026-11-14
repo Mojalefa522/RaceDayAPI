@@ -249,6 +249,6 @@ namespace RaceDayAPI.Tests
             var response = await _client.GetAsync("/api/results/my-results");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }//
+        }
     }
 }

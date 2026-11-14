@@ -128,59 +128,5 @@ namespace RaceDayAPI.Controllers
             return Ok(results);
         }
 
-        [HttpGet("events/{eventId}/results")]
-        public async Task<IActionResult> GetEventResults(int eventId)
-        {
-            if (!HttpContext.Session.IsLoggedIn())
-            {
-                return Unauthorized(new { message = "Not logged in." });
-            }
-
-            if (HttpContext.Session.GetRole() != "Organiser")
-            {
-                return StatusCode(403, new { message = "Only organisers can view event results." });
-            }
-
-            var organiserId = HttpContext.Session.GetUserId()!.Value;
-
-            var eventEntity = await _context.Events.FirstOrDefaultAsync(e => e.EventID == eventId);
-            if (eventEntity == null)
-            {
-                return NotFound(new { message = "Event not found." });
-            }
-
-            if (eventEntity.OrganiserID != organiserId)
-            {
-                return StatusCode(403, new { message = "You can only view results for your own events." });
-            }
-
-            var results = await _context.Results
-                .Include(r => r.Enrolment)
-                    .ThenInclude(e => e.Participant)
-                .Include(r => r.Enrolment)
-                    .ThenInclude(e => e.Category)
-                .Where(r => r.Enrolment.Category.EventID == eventId)
-                .Select(r => new
-                {
-                    resultId = r.ResultID,
-                    finishTime = r.FinishTime,
-                    position = r.Position,
-                    status = r.Status,
-                    participant = new
-                    {
-                        userId = r.Enrolment.Participant.UserID,
-                        fullName = r.Enrolment.Participant.FullName,
-                        email = r.Enrolment.Participant.Email
-                    },
-                    category = new
-                    {
-                        categoryId = r.Enrolment.Category.CategoryID,
-                        name = r.Enrolment.Category.Name
-                    }
-                })
-                .ToListAsync();
-
-            return Ok(results);
-        }
     }
 }

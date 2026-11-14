@@ -5,16 +5,8 @@ using RaceDayAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsEnvironment("Testing"))
-{
-    builder.Services.AddDbContext<RaceDayDbContext>(options =>
-        options.UseInMemoryDatabase("TestDb"));
-}
-else
-{
-    builder.Services.AddDbContext<RaceDayDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-}
+builder.Services.AddDbContext<RaceDayDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<PasswordService>();
 
@@ -53,6 +45,23 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RaceDayDbContext>();
+    db.Database.Migrate();
+
+    if (!db.Roles.Any())
+    {
+        db.Roles.AddRange(
+            new RaceDayAPI.Models.Role { RoleName = "Organiser", Description = "Can create and manage events" },
+            new RaceDayAPI.Models.Role { RoleName = "Participant", Description = "Can enrol in events and view results" }
+        );
+        db.SaveChanges();
+    }
+}
+
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -60,6 +69,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseSession();
 app.UseAuthorization();
 app.MapControllers();

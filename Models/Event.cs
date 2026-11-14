@@ -25,6 +25,8 @@ namespace RaceDayAPI.Models
         public string Status { get; set; } = "draft";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        public string? ImageUrl { get; set; } // <--- MAKE SURE THIS IS HERE
+
         [ForeignKey("OrganiserID")]
         public User Organiser { get; set; }
     }

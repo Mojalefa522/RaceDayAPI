@@ -1,0 +1,1 @@
+﻿DROP INDEX IX_EventEnrolments_BibNumber ON EventEnrolments;

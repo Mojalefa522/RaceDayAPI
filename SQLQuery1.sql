@@ -1,0 +1,1 @@
+﻿SELECT UserID, Email, FullName FROM Users WHERE UserID = 1;

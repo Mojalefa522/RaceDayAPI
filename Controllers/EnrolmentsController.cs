@@ -121,60 +121,6 @@ namespace RaceDayAPI.Controllers
             return Ok(enrolments);
         }
 
-        [HttpGet("events/{eventId}/enrolments")]
-        public async Task<IActionResult> GetEventEnrolments(int eventId)
-        {
-            if (!HttpContext.Session.IsLoggedIn())
-            {
-                return Unauthorized(new { message = "Not logged in." });
-            }
-
-            if (HttpContext.Session.GetRole() != "Organiser")
-            {
-                return StatusCode(403, new { message = "Only organisers can view enrolments." });
-            }
-
-            var organiserId = HttpContext.Session.GetUserId()!.Value;
-
-            var eventEntity = await _context.Events.FirstOrDefaultAsync(e => e.EventID == eventId);
-            if (eventEntity == null)
-            {
-                return NotFound(new { message = "Event not found." });
-            }
-
-            if (eventEntity.OrganiserID != organiserId)
-            {
-                return StatusCode(403, new { message = "You can only view enrolments for your own events." });
-            }
-
-            var enrolments = await _context.EventEnrolments
-                .Where(e => e.Category.EventID == eventId)
-                .Include(e => e.Category)
-                .Include(e => e.Participant)
-                .Select(e => new
-                {
-                    enrolmentId = e.EnrolmentID,
-                    status = e.Status,
-                    bibNumber = e.BibNumber,
-                    enrolmentDate = e.EnrolmentDate,
-                    category = new
-                    {
-                        categoryId = e.Category.CategoryID,
-                        name = e.Category.Name,
-                        distance = e.Category.Distance
-                    },
-                    participant = new
-                    {
-                        userId = e.Participant.UserID,
-                        fullName = e.Participant.FullName,
-                        email = e.Participant.Email
-                    }
-                })
-                .ToListAsync();
-
-            return Ok(enrolments);
-        }
-
         [HttpDelete("enrolments/{id}")]
         public async Task<IActionResult> Cancel(int id)
         {

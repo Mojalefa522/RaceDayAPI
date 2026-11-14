@@ -22,37 +22,25 @@ namespace RaceDayAPI.Controllers
         public async Task<IActionResult> Create(int eventId, [FromBody] CreateCategoryDto dto)
         {
             if (!HttpContext.Session.IsLoggedIn())
-            {
                 return Unauthorized(new { message = "Not logged in." });
-            }
 
             if (HttpContext.Session.GetRole() != "Organiser")
-            {
-                return StatusCode(403, new { message = "Access denied. Organiser role required." });
-            }
+                return StatusCode(403, new { message = "Access denied." });
 
             if (string.IsNullOrWhiteSpace(dto.Name))
-            {
                 return BadRequest(new { message = "Category name is required." });
-            }
 
             if (dto.MaxCapacity <= 0)
-            {
                 return BadRequest(new { message = "Max capacity must be greater than zero." });
-            }
 
             var userId = HttpContext.Session.GetUserId().Value;
             var eventEntity = await _context.Events.FirstOrDefaultAsync(e => e.EventID == eventId);
 
             if (eventEntity == null)
-            {
                 return NotFound(new { message = "Event not found." });
-            }
 
             if (eventEntity.OrganiserID != userId)
-            {
                 return StatusCode(403, new { message = "You can only manage categories for your own events." });
-            }
 
             var category = new Category
             {
@@ -69,12 +57,10 @@ namespace RaceDayAPI.Controllers
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { id = category.CategoryID }, new
+            return Ok(new
             {
                 categoryId = category.CategoryID,
-                name = category.Name,
-                distance = category.Distance,
-                maxCapacity = category.MaxCapacity
+                name = category.Name
             });
         }
 
@@ -106,29 +92,21 @@ namespace RaceDayAPI.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] UpdateCategoryDto dto)
         {
             if (!HttpContext.Session.IsLoggedIn())
-            {
                 return Unauthorized(new { message = "Not logged in." });
-            }
 
             if (HttpContext.Session.GetRole() != "Organiser")
-            {
-                return StatusCode(403, new { message = "Access denied. Organiser role required." });
-            }
+                return StatusCode(403, new { message = "Access denied." });
 
             var category = await _context.Categories
                 .Include(c => c.Event)
                 .FirstOrDefaultAsync(c => c.CategoryID == id);
 
             if (category == null)
-            {
                 return NotFound(new { message = "Category not found." });
-            }
 
             var userId = HttpContext.Session.GetUserId().Value;
             if (category.Event.OrganiserID != userId)
-            {
                 return StatusCode(403, new { message = "You can only manage categories for your own events." });
-            }
 
             category.Name = dto.Name ?? category.Name;
             category.Description = dto.Description ?? category.Description;
@@ -142,9 +120,7 @@ namespace RaceDayAPI.Controllers
             return Ok(new
             {
                 categoryId = category.CategoryID,
-                name = category.Name,
-                distance = category.Distance,
-                maxCapacity = category.MaxCapacity
+                name = category.Name
             });
         }
 
@@ -152,29 +128,21 @@ namespace RaceDayAPI.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             if (!HttpContext.Session.IsLoggedIn())
-            {
                 return Unauthorized(new { message = "Not logged in." });
-            }
 
             if (HttpContext.Session.GetRole() != "Organiser")
-            {
-                return StatusCode(403, new { message = "Access denied. Organiser role required." });
-            }
+                return StatusCode(403, new { message = "Access denied." });
 
             var category = await _context.Categories
                 .Include(c => c.Event)
                 .FirstOrDefaultAsync(c => c.CategoryID == id);
 
             if (category == null)
-            {
                 return NotFound(new { message = "Category not found." });
-            }
 
             var userId = HttpContext.Session.GetUserId().Value;
             if (category.Event.OrganiserID != userId)
-            {
                 return StatusCode(403, new { message = "You can only manage categories for your own events." });
-            }
 
             var hasEnrolments = await _context.EventEnrolments.AnyAsync(e => e.CategoryID == id);
             if (hasEnrolments)

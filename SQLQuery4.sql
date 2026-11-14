@@ -1,0 +1,1 @@
+﻿CREATE UNIQUE INDEX IX_EventEnrolments_BibNumber ON EventEnrolments(BibNumber) WHERE BibNumber IS NOT NULL;
